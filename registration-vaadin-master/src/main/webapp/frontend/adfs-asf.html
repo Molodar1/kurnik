@@ -1,0 +1,28 @@
+<link rel="import" href="bower_components/polymer/polymer.html">
+
+<dom-module id="adfs-asf">
+    <template>
+        <style include="shared-styles">
+            :host {
+                display: block;
+                height: 100%;
+            }
+        </style>
+
+    </template>
+
+    <script>
+        class AdfsAsf extends Polymer.Element {
+            static get is() {
+                return 'adfs-asf';
+            }
+
+            static get properties() {
+                return {
+                    // Declare your properties here.
+                };
+            }
+        }
+        customElements.define(AdfsAsf.is, AdfsAsf);
+    </script>
+</dom-module>

@@ -20,7 +20,7 @@ public class MailServiceImpl implements MailService{
 
 
     @Override
-    public void sendTokenMessage(String to, String token,String mail) throws MessagingException {
+    public void sendTokenMessage( String token,String mail) throws MessagingException {
         MimeMessage msg = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(msg, true);
         String link = "http://localhost:8080/active?token="+token;

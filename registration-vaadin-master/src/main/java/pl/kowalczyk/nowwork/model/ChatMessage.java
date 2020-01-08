@@ -3,7 +3,7 @@ package pl.kowalczyk.nowwork.model;
 public class ChatMessage {
     private String from;
     private String message;
-
+    
     public ChatMessage(String from, String message) {
         this.from = from;
         this.message = message;

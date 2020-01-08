@@ -8,10 +8,10 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
-import com.vaadin.flow.data.validator.EmailValidator;
 import com.vaadin.flow.data.validator.RegexpValidator;
 import com.vaadin.flow.router.Route;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import pl.kowalczyk.nowwork.model.Token;
 import pl.kowalczyk.nowwork.model.User;
 import pl.kowalczyk.nowwork.repository.TokenRepo;
@@ -34,12 +34,14 @@ public class RegistrationGui extends VerticalLayout {
     private TokenRepo tokenRepo;
     private Label usernameInDatabase = new Label();
     private Label emailInDatabase = new Label();
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
-    public RegistrationGui(UserRepo userRepo, MailService mailService, TokenRepo tokenRepo) {
+    public RegistrationGui(UserRepo userRepo, MailService mailService, TokenRepo tokenRepo, PasswordEncoder passwordEncoder) {
         this.userRepo = userRepo;
         this.mailService = mailService;
         this.tokenRepo = tokenRepo;
+        this.passwordEncoder = passwordEncoder;
         Label label = new Label("There was an error");
         label.setVisible(false);
         TextField textFieldUsername = usernameField();
@@ -165,10 +167,10 @@ public class RegistrationGui extends VerticalLayout {
 
 
     private void saveUser(String username,String email, String password) throws MessagingException {
-        String hashedPassword = Hashing.sha256().hashString(password, StandardCharsets.UTF_8).toString();
 
-        User user = new User(username, email, hashedPassword);
-        user.setActive(false);
+
+        User user = new User(username, email, passwordEncoder.encode(password), "User", false);
+
         Token userToken = new Token(user, LocalDateTime.now(),LocalDateTime.now().plusHours(24));
         userToken.generateToken();
 

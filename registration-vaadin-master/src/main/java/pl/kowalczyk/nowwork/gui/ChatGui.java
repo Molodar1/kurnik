@@ -65,24 +65,34 @@ public class ChatGui extends VerticalLayout {
     }
 
     private void showChat() {
-        MessageList messageList = new MessageList();
+
 
         add(messageList, createInputLayout());
         expand(messageList);
 
 
-        messages.subscribe(message -> {
-            getUI().ifPresent(ui ->
-                    ui.access(() ->
-                            messageList.add(
-                                    new Paragraph(message.getFrom() + ": " +
-                                            message.getMessage())
-                            )
-                    ));
-
-        });
+        messages.subscribe(this::addMessage);
     }
 
+    private void addMessage(ChatMessage message) {
+
+        if (message.getMessage().length() > 100) {
+            Notification notification = new Notification("Message is too long", 3000);
+            notification.open();
+            return;
+        }
+        Label username = new Label();
+        username.setText(message.getFrom() + " : ");
+        if (message.getFrom().equals(this.username)) {
+            username.getStyle().set("color", "red");
+        }
+        Label messageText = new Label();
+        messageText.setText(message.getMessage());
+        getUI().ifPresent(ui ->
+                ui.access(() -> messageList.add(new HorizontalLayout(username, messageText))));
+
+
+    }
     private Component createInputLayout() {
         HorizontalLayout layout = new HorizontalLayout();
         layout.setWidth("100%");

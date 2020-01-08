@@ -1,16 +1,17 @@
 package pl.kowalczyk.nowwork.model;
 
 
-import org.apache.commons.lang3.RandomStringUtils;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotEmpty;
-import java.nio.charset.Charset;
-import java.util.Random;
+import java.util.Collection;
+import java.util.Collections;
 
 @Entity
 @Table(name = "users")
-public class User {
+public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
@@ -18,21 +19,19 @@ public class User {
     private String username;
     private String email;
     private String password;
-    private Boolean isActive;
+    private String role;
+    private boolean enabled;
 
-    public User(String username, String email, String password) {
+    public User(String username, String email, String password, String role, boolean enabled) {
         this.username = username;
         this.email = email;
         this.password = password;
+        this.role = role;
+        this.enabled = enabled;
     }
 
-    public Boolean getActive() {
-        return isActive;
-    }
 
-    public void setActive(Boolean active) {
-        isActive = active;
-    }
+
 
 
     public User() {
@@ -40,6 +39,30 @@ public class User {
 
     public String getUsername() {
         return username;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
     public void setUsername(String username) {
@@ -52,6 +75,11 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return Collections.singleton(new SimpleGrantedAuthority(role));
     }
 
     public String getPassword() {
@@ -77,7 +105,7 @@ public class User {
                 ", username='" + username + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
-                ", isActive=" + isActive +
+                ", isActive=" + enabled +
                 '}';
     }
 }

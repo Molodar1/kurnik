@@ -38,7 +38,7 @@ public class ActivationGui extends VerticalLayout implements HasUrlParameter<Str
             if(userToken.get().getExpTime().isAfter(LocalDateTime.now())){
             User user = userToken.get().getUser();
             labelUser.setText("Hello," + user.getUsername());
-            user.setActive(true);
+                user.setEnabled(true);
             userRepo.save(user);}
             else {
                 labelUser.setText("Your token expired");
